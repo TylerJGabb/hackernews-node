@@ -1,63 +1,37 @@
 const { GraphQLServer } = require("../node_modules/graphql-yoga");
+const { prisma } = require('./generated/prisma-client')
 /**
- * Each GraphQL Schema has three ROOT types
- * Query
- * Mutation
- * Subscription
+ * So prisma comes out of the box with capabilities to wire to a MySQL server running on AWS Aurora.
+ * That was used here, but we can configure it to use a local database, or database of our choice.
+ * You can set up prisma by typing `prisma deploy`.
+ * 
+ * Right now the PrismaServer is somewhere on AWS
  */
 
-// ideally this would come from a database, but you can
-// pretend for now
-let links = [
-  {
-    id: "link-0",
-    url: "www.google.com",
-    description: "Fullstack tutorial for GraphQL"
-  }
-];
-
-let idCount = links.length;
 
 const resolvers = {
   Query: {
     info: () => `This is the API of a Hackernews Clone`,
-    feed: () => links
+    //resolver arguments are important to know, but not crucial for this tutorial
+    feed: (root, args, context, info) => {
+      return context.prisma.links();
+    },
   },
 
   Mutation: {
-    postLink: (parent, args) => {
-      const link = {
-        id: `link-${idCount++}`,
-        description: args.description,
-        url: args.url
-      };
-      links.push(link);
-      return link;
-    },
-
-    updateLink: (parent, args) => {
-      const link = links.find(l => l.id === args.id);
-      if (link) {
-        if (args.description) link.description = args.description;
-        if (args.url) link.url = args.url;
-        return link;
-      }
-    },
-
-    deleteLink: (parent, args) => {
-      let found = links.find(l => l.id === args.id);
-      if (found) {
-        links = links.filter(l => l !== found);
-        return found;
-      }
+    postLink: (root, args, context) => {
+      return context.prisma.createLink({
+        url: args.url,
+        description: args.description
+      });
     }
   }
 };
 
 const server = new GraphQLServer({
-  //points to file with schema definitions
-  typeDefs: "./src/schema.graphql",
-  resolvers
+  typeDefs: "./src/schema.graphql", //points to file with schema definitions
+  resolvers,
+  context : { prisma } //context will have an initial property now called `prisma`, the instance of our prisma ORM
 });
 
 server.start(() => console.log("Im running on localhost:4000!"));

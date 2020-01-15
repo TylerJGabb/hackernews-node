@@ -8,8 +8,8 @@ type Query {
 type Mutation {
     # note that each mutation here has a resolver
     postLink(url: String!, description: String!): Link!
-    updateLink(id: ID!, url: String, description: String): Link
-    deleteLink(id: ID!): Link
+    # updateLink(id: ID!, url: String, description: String): Link
+    # deleteLink(id: ID!): Link
 }
 
 type Link {
