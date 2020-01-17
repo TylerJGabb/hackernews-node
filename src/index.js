@@ -1,5 +1,6 @@
 const { GraphQLServer } = require("../node_modules/graphql-yoga");
 const { prisma } = require("./generated/prisma-client");
+const  Query  = require('../resolvers/Query');
 /**
  * So prisma comes out of the box with capabilities to wire to a MySQL server running on AWS Aurora.
  * That was used here, but we can configure it to use a local database, or database of our choice.
@@ -9,13 +10,7 @@ const { prisma } = require("./generated/prisma-client");
  */
 
 const resolvers = {
-  Query: {
-    info: () => `This is the API of a Hackernews Clone`,
-    //resolver arguments are important to know, but not crucial for this tutorial
-    feed: (root, args, context, info) => {
-      return context.prisma.links();
-    }
-  },
+  Query,
 
   Mutation: {
     postLink: (root, args, context) => {
@@ -29,7 +24,7 @@ const resolvers = {
         id: args.id
       });
     }
-  }
+  },
 };
 
 const server = new GraphQLServer({
