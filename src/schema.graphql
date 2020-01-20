@@ -2,7 +2,7 @@
 # or be able to be trivially resolvable
 type Query {
     info: String!
-    feed: [Link!]!
+    links: [Link!]!
 }
 
 type Mutation {

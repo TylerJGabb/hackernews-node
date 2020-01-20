@@ -1,12 +1,8 @@
-function feed(root, args, context, info) {
-    return context.prisma.links();
-}
-
-function info(){
-    return `This is the API of a Hackernews Clone`;
-}
-
 module.exports = {
-    feed,
-    info
-}
+    
+  links: (root, args, context, info) => {
+    return context.prisma.links();
+  },
+
+  info: () => `This is the API of a Hackernews Clone`
+};
