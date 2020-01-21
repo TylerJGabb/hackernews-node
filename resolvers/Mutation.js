@@ -1,6 +1,6 @@
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const { APP_SECRET, getUserId } = require('../src/utils')
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { APP_SECRET, getUserId } = require("../src/utils");
 
 async function signup(parent, args, context, info) {
   const password = await bcrypt.hash(args.password, 10);
@@ -29,7 +29,14 @@ function postLink(root, args, context) {
   return context.prisma.createLink({
     url: args.url,
     description: args.description,
-    postedBy: {connect: {id: userId}}
+    postedBy: {
+      //this is called a 'nested object write'
+      //it is used to create/update relational data
+      //this tells prisma, "connect the user that has the id of `userId` to this Link"
+      connect: {
+        id: userId
+      }
+    }
   });
 }
 
