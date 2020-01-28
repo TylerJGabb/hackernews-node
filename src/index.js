@@ -22,6 +22,11 @@ const server = new GraphQLServer({
     User
   },
   context: request => {
+   /**
+    * each resolver can take up to 4 arguments, context is one of those arguments.
+    * setting this field in GraphQLServer's properties makes it so each resolver's context
+    * argument will contain everything in the request, and additionally, prisma. 
+    */
     return {
       ...request,
       prisma //context will have an initial property now called `prisma`, the instance of our prisma ORM

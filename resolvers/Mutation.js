@@ -42,7 +42,7 @@ function postLink(root, args, context) {
 
 function deleteLink(root, args, context) {
   getUserId(context);
-  return prisma.deleteLink({
+  return context.prisma.deleteLink({
     id: args.id
   });
 }
